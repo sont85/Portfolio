@@ -1,3 +1,3 @@
 Son Truong Portfolio Website
 
-luckycode.org
+http://luckycode.org
