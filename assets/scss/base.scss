@@ -31,6 +31,10 @@ a {
     }
 }
 
+textarea {
+  resize: vertical;
+}
+
 .btn, a.btn {
     @include transition(all 0.4s ease-in-out);
     font-family: 'Montserrat', arial, sans-serif;

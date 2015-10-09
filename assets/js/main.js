@@ -1,59 +1,62 @@
-jQuery(document).ready(function($) {
-
-
-    /*======= Skillset *=======*/
-
-    $('.level-bar-inner').css('width', '0');
-
-    $(window).on('load', function() {
-
-        $('.level-bar-inner').each(function() {
-
-            var itemWidth = $(this).data('level');
-
-            $(this).animate({
-                width: itemWidth
-            }, 800);
-
-        });
-
+$(document).ready(function() {
+  /*======= Skillset *=======*/
+  $('.level-bar-inner').css('width', '0');
+  $(window).on('load', function() {
+    $('.level-bar-inner').each(function() {
+      var itemWidth = $(this).data('level');
+      $(this).animate({
+        width: itemWidth
+      }, 800);
     });
+  });
 
-    /* Bootstrap Tooltip for Skillset */
-    $('.level-label').tooltip();
+  /* Bootstrap Tooltip for Skillset */
+  $('.social a').tooltip();
 
-    /* jQuery RSS - https://github.com/sdepold/jquery-rss */
-    $("#rss-feeds").rss(
+  /* Github Activity Feed - https://github.com/caseyscarborough/github-activity */
+  GitHubActivity.feed({
+    username: "sont85",
+    selector: "#ghfeed"
+  });
 
-        //Change this to your own rss feeds
-        "http://feeds.feedburner.com/TechCrunch/startups",
-
-        {
-        // how many entries do you want?
-        // default: 4
-        // valid values: any integer
-        limit: 3,
-
-        // the effect, which is used to let the entries appear
-        // default: 'show'
-        // valid values: 'show', 'slide', 'slideFast', 'slideSynced', 'slideFastSynced'
-        effect: 'slideFastSynced',
-
-        // outer template for the html transformation
-        // default: "<ul>{entries}</ul>"
-        // valid values: any string
-        layoutTemplate: "<div class='item'>{entries}</div>",
-
-        // inner template for each entry
-        // default: '<li><a href="{url}">[{author}@{date}] {title}</a><br/>{shortBodyPlain}</li>'
-        // valid values: any string
-        entryTemplate: '<h3 class="title"><a href="{url}" target="_blank">{title}</a></h3><div><p>{shortBodyPlain}</p><a class="more-link" href="{url}" target="_blank"><i class="fa fa-external-link"></i>Read more</a></div>'
-
+  $('#contact_form').submit(function(e) {
+    e.preventDefault();
+    var email = $('#email').val(); // get email field value
+    var name = $('#name').val(); // get name field value
+    var phone = $('#phone').val(); // get name field value
+    var msg = $('#message').val(); // get message field value
+    $.ajax({
+        type: 'POST',
+        url: 'https://mandrillapp.com/api/1.0/messages/send.json',
+        data: {
+          'key': '7WmAYyvrBPxYbj6OUcGv_Q',
+          'message': {
+            'from_email': email,
+            'from_name': name,
+            'headers': {
+              'Reply-To': email
+            },
+            'subject': 'Website Contact Form Submission',
+            'text': 'Phone Number: ' + phone + '\n' + msg,
+            'to': [{
+              'email': 'sont85@gmail.com',
+              'name': 'Son Truong',
+              'type': 'to'
+            }]
+          }
         }
-    );
+      })
+      .done(function(response) {
+        $('#name').val('');
+        $('#email').val('');
+        $('#phone').val('');
+        $('#message').val('');
+        $('#contactModal').modal('hide');
+        swal("Message Sent", "Thank You, I'll return your message soon.", "success");
 
-    /* Github Activity Feed - https://github.com/caseyscarborough/github-activity */
-    GitHubActivity.feed({ username: "sont85", selector: "#ghfeed" });
-
-
+      })
+      .fail(function(response) {
+        swal("Message Fail", "I'm sorry, Please try again.", "error");
+      });
+  });
 });
